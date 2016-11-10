@@ -3,8 +3,8 @@
 from PIL import Image, ImageFilter
 
 # Parameter
-shift_left = 10
-shift_up = 10 
+shift_right = -20
+shift_down = -20
 blur_iterations = 20
 
 # RGBA
@@ -17,23 +17,23 @@ grey = (30,30,30,255)
 tux = Image.open("tux.png")
 
 # Schatten erzeugen
-shadow = tux.copy() 
+tux_mask = tux.copy() 
 
-# in S/W verwandeln
-pixels = shadow.load()
-for y in range(shadow.size[1]):
-    for x in range(shadow.size[0]):
-        if pixels[x,y][3] > 0:
-            pixels[x,y] = grey
+# S/W-Maske erzeugen
+pixel = tux_mask.load()
+for y in range(tux_mask.size[1]):
+    for x in range(tux_mask.size[0]):
+        if pixel[x,y][3] > 0:
+            pixel[x,y] = grey
         else:
-            pixels[x,y] = transparent
+            pixel[x,y] = transparent
 
-# Weichzeichnen
+# Schatten weichzeichnen
+shadow = tux_mask.copy()
 for iteration in range(blur_iterations):
     shadow = shadow.filter(ImageFilter.BLUR)
 
 # Zusammenfuegen
-shadow.paste(tux, (), )
+shadow.paste(tux, (shift_right,shift_down), tux_mask)
 
 shadow.save("tux+shadow.png")
-shadow.show()
