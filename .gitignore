@@ -1,5 +1,7 @@
 *.pyc
 
+*-enhanced.jpg
+
 *~
 .*.swp
 
