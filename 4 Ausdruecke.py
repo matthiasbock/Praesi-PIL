@@ -2,9 +2,14 @@
 
 from PIL import Image, ImageMath
 
-Bild1 = Image.open("Original.png")
-Bild2 = Image.open("Schluessel.png")
+Bild1 = Image.open("beuth-original.png")
+Bild2 = Image.open("beuth-verarbeitet.png")
 
-out = ImageMath.eval("a^b", a=Bild1, b=Bild2)
+(r1,g1,b1) = Bild1.split()
+(r2,g2,b2) = Bild2.split()
 
-out.save("Ergebnis.png")
+r3 = ImageMath.eval("b-a", a=r1, b=r2).convert("P")
+out = Image.merge(Bild1.mode, (r3, g1, b1))
+
+out.save("beuth-ergebnis.png")
+out.show()
