@@ -5,17 +5,18 @@
 
 from PIL import Image
 
-# Hintergrundfarbe: weiss
-bgcolor = (255,255,255)
+# Parameter
+transparent = (255,255,255,0)
+bgcolor = transparent
 
 # Bild laden
-tux = Image.load("tux.png")
+img = Image.open("tux.png")
+pixels = img.load()
 
-# Kleinestes Rechteck mit Nicht-Null-Pixeln bestimmen ("Bounding Box")
-bbox = tux.getbbox()
+width = img.size[0]
+height = img.size[1]
 
-print bbox
-# sicherlich falsche Ausgangswerte
+# Ausgangswerte fuer unseren Grenzfindungs-Algorithmus
 minX = width
 maxX = 0
 minY = height
@@ -27,8 +28,8 @@ for y in range(height):
     # alle Spalten durchgehen
     for x in range(width):
 
-        # dieses Pixels gehoert nicht zum Hintergrund
-        if pixel[x,y] != bgcolor:
+        # gehoert das Pixel zum Hintergrund ?
+        if pixels[x,y][3] > 0:
 
             # die Grenzen unserer Zuschneide-Box ggf. anpassen
             if (x < minX):
@@ -41,8 +42,7 @@ for y in range(height):
                 maxY = y
 
 # mit den oben bestimmten Werten zuschneiden
-img.crop(minX, minY, maxX, maxY)
+img = img.crop( (minX,minY,maxX,maxY) )
 
 # speichern
-
-img.save("Zugeschnitten.jpg")
+img.save("tux-cropped.png")
