@@ -2,38 +2,38 @@
 
 from PIL import Image, ImageFilter
 
-# Parameter
+# ein paar Operationsvariablen
 shift_right = -20
 shift_down = -20
 blur_iterations = 20
 
-# RGBA
+# unsere RGBA-Konstanten
 transparent = (255,255,255,0)
 white = (255,255,255,255)
 black = (0,0,0,255)
 grey = (30,30,30,255)
 
-# aus Datei laden
+# Bild aus Datei laden
 tux = Image.open("tux.png")
 
-# Schatten erzeugen
-tux_mask = tux.copy() 
+# neues Bild fuer den Schatten erzeugen
+grey_tux = tux.copy()
 
-# S/W-Maske erzeugen
-pixel = tux_mask.load()
-for y in range(tux_mask.size[1]):
-    for x in range(tux_mask.size[0]):
+# Bild in Graustufen-Abbild konvertieren
+pixel = grey_tux.load()
+for y in range(grey_tux.size[1]):
+    for x in range(grey_tux.size[0]):
         if pixel[x,y][3] > 0:
             pixel[x,y] = grey
         else:
             pixel[x,y] = transparent
 
-# Schatten weichzeichnen
-shadow = tux_mask.copy()
+# den Schatten mehrmals weichzeichnen
+shadow = grey_tux.copy()
 for iteration in range(blur_iterations):
     shadow = shadow.filter(ImageFilter.BLUR)
 
 # Zusammenfuegen
-shadow.paste(tux, (shift_right,shift_down), tux_mask)
+shadow.paste(tux, (shift_right,shift_down), grey_tux)
 
 shadow.save("tux+shadow.png")
